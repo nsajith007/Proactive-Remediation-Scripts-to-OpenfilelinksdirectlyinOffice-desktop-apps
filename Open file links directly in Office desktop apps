@@ -1,0 +1,34 @@
+#Detection for Open file links directly in Office desktop apps
+
+# Set Variables
+$RegKeyFullPath = "HKCU:\SOFTWARE\Microsoft\Office\16.0\Common\General"
+$ExpectedValue = 0
+
+# Check if the registry key exists
+if (Test-Path -Path $RegKeyFullPath) {
+    # Get the current value
+    $CurrentValue = Get-ItemProperty -Path $RegKeyFullPath -Name "DisableOpeningLinksInApp" -erroraction silentlycontinue | Select-Object -ExpandProperty "DisableOpeningLinksInApp"
+    
+    # Compare with the expected value
+    if ($CurrentValue -ne $ExpectedValue) {
+        Write-Host "Registry key value is different from expected. Remediation needed."
+        exit 1
+    }
+}
+else {
+    Write-Host "Registry key does not exist. Remediation needed."
+    exit 1
+}
+
+
+#Remediation for Netbios for Open file links directly in Office desktop apps
+
+# Set Variables
+$RegKeyFullPath = "HKCU:\SOFTWARE\Microsoft\Office\16.0\Common\General"
+$NewValue = 0
+
+# Set the registry key value
+New-Item -Path $RegKeyFullPath -force 
+New-ItemProperty -Path $RegKeyFullPath -Name "DisableOpeningLinksInApp" -Value $NewValue | Out-Null
+
+Write-Host "Registry key value set to $NewValue"
